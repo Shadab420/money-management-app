@@ -1,14 +1,27 @@
+const registerValidator = require('../validator/registerValidator'); 
+
 // login controller.
 module.exports = {
 
 	register(req,res){
 		//get user input
-		let {name, email, password, confirmPassword} = req.body;
+		let userData = req.body;
 
 		//validate user input
+		let validate = registerValidator(userData);
 		
+		if(validate.isValid){
 
-		//duplicate user check.
+			//duplicate user check.
+			res.status(200).json({
+				message: "ok!"
+			})
+		}
+		else{
+			res.status(400).json(validate.error);
+		}
+
+		
 
 		//new user object
 
