@@ -2,6 +2,7 @@ const User = require('../model/User');
 const registerValidator = require('../validator/registerValidator');
 const loginValidator = require('../validator/loginValidator');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 
 module.exports = {
@@ -89,7 +90,7 @@ module.exports = {
 
 					if(user){
 						//checking if the password matches
-						bcrypt.compare(password, user.password, (err,res) => {
+						bcrypt.compare(password, user.password, (err,result) => {
 
 							if(err){
 								return res.status(500).json({
@@ -97,11 +98,27 @@ module.exports = {
 								})
 							}
 
-							if(!res){
-								res.status(400).json({
+							if(!result){
+								return res.status(400).json({
 									message: "wrong password!"
 								})
 							}
+
+							// Generating api token for user using jwt
+							let token = jwt.sign(
+								{
+									_id: user._id,
+									name: user.name,
+									email: user.email
+								}, 
+								'SECRET', 
+								{expiresIn: "2h"}
+							)
+
+							return res.status(201).json({
+								message: "Login Successful!",
+								token: `Bearer ${token}`
+							});
 
 						})
 					}else{
