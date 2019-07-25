@@ -20,7 +20,11 @@ registerValidator = (userData) => {
 
 		if(!userData.password){
 			error.password = "Please enter your password";
-		}else if(!userData.confirmPassword){
+		}else if(userData.password.length < 6){
+			error.password = "Password should be at least 6 characters long";
+		}
+
+		if(!userData.confirmPassword){
 			error.confirmPassword = "Please enter confirm password";
 		}else if(userData.password !== userData.confirmPassword){
 			error.passwordMismatch = "Password didn\'t match!";
