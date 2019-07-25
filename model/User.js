@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+// const Transaction = require('./Transaction');
 
 const Schema = mongoose.Schema;
 
@@ -21,10 +22,7 @@ const userSchema = new Schema({
     income: Number,
     expense: Number,
     transactions: {
-        type: [{
-            transactionId: Schema.Types.ObjectId,
-            ref: 'Transaction'
-        }]
+        type: []
     }
 });
 
