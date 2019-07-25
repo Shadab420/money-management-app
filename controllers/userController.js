@@ -1,5 +1,6 @@
 const User = require('../model/User');
 const registerValidator = require('../validator/registerValidator');
+const loginValidator = require('../validator/loginValidator');
 const bcrypt = require('bcrypt');
 
 
@@ -74,11 +75,51 @@ module.exports = {
 
 	// login controller.
 	login(req,res){
-		let name = req.body.name;
-		let email = req.body.email;
+		
+		//get user data
+		let {email, password} = req.body;
 
-		res.json({
-			message: `Welcome ${name}! We will contact you through ${email}`
-		})
+		let validate = loginValidator({email,password});
+
+		if(validate.isValid){
+			
+			//checking if user exist
+			User.findOne({email})
+				.then(user => {
+
+					if(user){
+						//checking if the password matches
+						bcrypt.compare(password, user.password, (err,res) => {
+
+							if(err){
+								return res.status(500).json({
+									message: "server error!"
+								})
+							}
+
+							if(!res){
+								res.status(400).json({
+									message: "wrong password!"
+								})
+							}
+
+						})
+					}else{
+						return res.status(404).json({
+							message: "user doesn't exist"
+						})
+					}
+					
+
+				})
+				.catch(err=>{
+					res.status(400).json({
+						message: "User doesn\'t exist!"
+					})
+				})
+
+		}else{
+			res.status(400).json(validate.error);
+		}
 	}
 }
