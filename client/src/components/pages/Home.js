@@ -1,9 +1,11 @@
 import React from 'react';
+import Login from './Login';
 
 const Home = props => {
 
 	return (
-		<h1> I am home! </h1>
+		
+		<Login/>
 	)
 }
 
